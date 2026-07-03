@@ -1,0 +1,16 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.8.0
+python-dotenv>=1.0.1
+python-multipart>=0.0.9
+httpx>=0.27.0
+pytest>=8.2.0
+pytest-asyncio>=0.23.0
+# Local transcription (stable-ts) replaces the previous OpenAI Whisper API call.
+# Its heavy torch/whisper stack is pinned separately in
+# requirements-transcription.txt (needs Python <=3.12 on Intel macOS).
+# Install that file to enable real transcription:
+#   pip install -r requirements-transcription.txt
+# Cognee owns the graph/vector memory. If installation fails locally, the service
+# continues with a JSON projection fallback so the MVP can still be exercised.
+cognee

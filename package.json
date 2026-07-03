@@ -1,0 +1,17 @@
+{
+  "name": "anamnesis",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI medical consultation assistant showcasing Cognee graph memory for continuity of care.",
+  "packageManager": "pnpm@10.17.1",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r --parallel --if-present dev",
+    "dev:web": "pnpm --filter @anamnesis/web dev",
+    "dev:api": "pnpm --filter @anamnesis/api dev",
+    "dev:cognee": "cd services/cognee && ./scripts/python.sh -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001",
+    "seed": "cd services/cognee && ./scripts/python.sh scripts/seed_patient.py --forget-first",
+    "test:cognee": "cd services/cognee && ./scripts/python.sh -m pytest",
+    "typecheck": "pnpm --filter @anamnesis/shared typecheck && pnpm --filter @anamnesis/api typecheck && pnpm --filter @anamnesis/web typecheck"
+  }
+}

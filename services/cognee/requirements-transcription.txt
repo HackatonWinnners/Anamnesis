@@ -1,0 +1,21 @@
+# Real stable-ts transcription stack (jianfch/stable-ts).
+#
+# stable-ts pulls in openai-whisper + torch + numba. On Intel macOS (x86_64)
+# the last PyTorch wheels are 2.2.2, which only ship for Python <= 3.12 and are
+# built against NumPy 1.x. numba/llvmlite must also use versions that publish
+# x86_64 macOS wheels. These pins are the verified working combination on
+# Python 3.12 / Intel macOS; on other platforms newer versions also work.
+#
+# Install (Python 3.12 recommended on Intel macOS):
+#   python3.12 -m venv services/cognee/.venv
+#   services/cognee/.venv/bin/pip install -r services/cognee/requirements.txt
+#   services/cognee/.venv/bin/pip install -r services/cognee/requirements-transcription.txt
+#
+# Requires ffmpeg in PATH at transcribe time (brew install ffmpeg).
+
+torch==2.2.2
+torchaudio==2.2.2
+numpy==1.26.4          # torch 2.2.2 is built against NumPy 1.x
+llvmlite==0.43.0       # has x86_64 macOS cp312 wheels
+numba==0.60.0          # compatible with numpy<2.1 and llvmlite 0.43
+stable-ts @ git+https://github.com/jianfch/stable-ts.git

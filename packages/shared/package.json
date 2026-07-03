@@ -1,0 +1,19 @@
+{
+  "name": "@anamnesis/shared",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check:schemas": "node --import ../../apps/api/node_modules/tsx/dist/loader.mjs src/schemas.check.ts"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,12 @@
+services:
+  cognee:
+    build:
+      context: ./services/cognee
+    env_file:
+      - .env
+    environment:
+      ANAMNESIS_DATA_DIR: /app/.data
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/cognee/.data:/app/.data
