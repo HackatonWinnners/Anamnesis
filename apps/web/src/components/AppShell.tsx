@@ -13,10 +13,6 @@ const navItems = [
   ["6", "Medication Safety", "/safety"],
   ["7", "Memory Graph", "/graph"],
   ["8", "Medical Intuition", "/improve"],
-  ["9", "GDPR Forget", "/forget"],
-  ["10", "Demo Seed Data", "/seed"],
-  ["11", "Doctor Handover", "/handover"],
-  ["12", "System Status", "/status"],
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {

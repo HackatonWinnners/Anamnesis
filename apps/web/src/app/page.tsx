@@ -42,9 +42,6 @@ export default function HomePage() {
         <Link className="btn" href="/graph">
           Open memory graph
         </Link>
-        <Link className="btn danger" href="/forget">
-          GDPR forget patient
-        </Link>
       </div>
 
       <div className="sec">System status</div>
@@ -99,6 +96,16 @@ export default function HomePage() {
       <div className="ok">
         Demo defaults: <b>{DEFAULT_DEMO_PATIENT.name}</b> · <span className="mono">{DEFAULT_DEMO_PATIENT.id}</span>
       </div>
+
+      <details className="box">
+        <summary className="sec">Admin / demo utilities</summary>
+        <div className="row">
+          <Link className="btn" href="/handover">Doctor handover</Link>
+          <Link className="btn danger" href="/forget">GDPR forget patient</Link>
+          <Link className="btn" href="/seed">Demo seed data</Link>
+          <Link className="btn" href="/status">System status</Link>
+        </div>
+      </details>
     </div>
   );
 }

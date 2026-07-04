@@ -162,6 +162,14 @@ select {
   background: #fff;
 }
 
+details.box summary {
+  cursor: pointer;
+}
+
+details.box[open] summary {
+  margin-bottom: 8px;
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;

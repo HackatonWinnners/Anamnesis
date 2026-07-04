@@ -72,7 +72,7 @@ export default function PatientDashboardPage() {
         <Link className="btn" href="/timeline">Run recall query</Link>
         <Link className="btn" href="/safety">Check medication conflict</Link>
         <button className="btn" onClick={() => void onImprove()}>Run improve()</button>
-        <Link className="btn danger" href="/forget">Forget patient data</Link>
+        <Link className="btn" href="/handover">Prepare handover</Link>
       </div>
       <StatusLine>{message}</StatusLine>
       <div className="sec">Recent clinical summary</div>
@@ -82,6 +82,14 @@ export default function PatientDashboardPage() {
         <div><b>Latest visit:</b> reports short/fragmented sleep; fatigue improved; discussed iron supplementation adherence.</div>
         <div><b>Active follow-up plans:</b> repeat ferritin · continue NSAID avoidance · sleep diary review next visit.</div>
       </div>
+      <details className="box">
+        <summary className="sec">Data administration</summary>
+        <div className="row">
+          <Link className="btn danger" href="/forget">GDPR forget patient</Link>
+          <Link className="btn" href="/seed">View demo seed data</Link>
+          <Link className="btn" href="/status">System status</Link>
+        </div>
+      </details>
     </div>
   );
 }
