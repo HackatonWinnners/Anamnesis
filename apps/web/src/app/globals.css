@@ -6,13 +6,13 @@
    ===================================================================== */
 :root {
   color-scheme: light;
-  --bg: #f0eee9;
-  --ink: #1a1a1a;
-  --panel: #ffffff;
-  --line: rgba(0, 0, 0, 0.12);
-  --line-strong: rgba(0, 0, 0, 0.22);
-  --muted: rgba(0, 0, 0, 0.55);
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --bg: #fff;
+  --ink: #000;
+  --panel: #fff;
+  --line: #000;
+  --line-strong: #000;
+  --muted: #000;
+  --shadow: none;
   --mono: ui-monospace, Menlo, monospace;
 }
 
@@ -54,7 +54,7 @@ select {
   flex: none;
   width: 246px;
   border-right: 1px solid var(--line);
-  background: #fbfaf7;
+  background: #fff;
   padding: 18px 14px 28px;
   position: sticky;
   top: 0;
@@ -99,7 +99,8 @@ select {
 }
 
 .nav a.link:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #000;
+  color: #fff;
 }
 
 .nav a.link.active {
@@ -109,12 +110,11 @@ select {
 
 .nav a.link .num {
   font: 600 10px var(--mono);
-  opacity: 0.6;
   min-width: 15px;
 }
 
 .nav a.link.active .num {
-  opacity: 0.85;
+  text-decoration: underline;
 }
 
 .main {
@@ -149,7 +149,7 @@ select {
   font: 600 10px var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.5);
+  color: #000;
 }
 
 .box {
@@ -201,11 +201,12 @@ select {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: background 0.12s ease, color 0.12s ease, opacity 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease;
 }
 
 .btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #000;
+  color: #fff;
 }
 
 .btn.pri {
@@ -222,12 +223,12 @@ select {
 }
 
 .btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  text-decoration: line-through;
 }
 
 .chip {
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid #000;
   border-radius: 999px;
   padding: 2px 9px;
   font-size: 11px;
@@ -256,12 +257,12 @@ select {
 }
 
 .disc {
-  border: 1px dashed rgba(0, 0, 0, 0.45);
+  border: 1px dashed #000;
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.65);
-  background: rgba(0, 0, 0, 0.03);
+  color: #000;
+  background: #fff;
 }
 
 .tbl {
@@ -275,13 +276,13 @@ select {
   font: 600 10px var(--mono);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  color: #000;
+  border-bottom: 1px solid #000;
   padding: 5px 8px;
 }
 
 .tbl td {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #000;
   padding: 6px 8px;
   vertical-align: top;
 }
@@ -294,17 +295,17 @@ select {
 }
 
 .field .in {
-  border: 1px solid rgba(0, 0, 0, 0.35);
+  border: 1px solid #000;
   border-radius: 5px;
   padding: 7px 9px;
-  color: rgba(0, 0, 0, 0.75);
+  color: #000;
   background: #fff;
   width: 100%;
   font-size: 12px;
 }
 
 .field .in::placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #000;
 }
 
 textarea.in {
@@ -356,12 +357,12 @@ textarea.in {
 }
 
 .dot.active {
-  background: rgba(0, 0, 0, 0.12);
+  background: #fff;
 }
 
 .tag {
   font: 600 9.5px var(--mono);
-  border: 1px solid rgba(0, 0, 0, 0.35);
+  border: 1px solid #000;
   border-radius: 4px;
   padding: 1px 5px;
   text-transform: uppercase;
@@ -384,41 +385,35 @@ textarea.in {
 
 .edge {
   font: 600 9px var(--mono);
-  color: rgba(0, 0, 0, 0.5);
+  color: #000;
 }
 
 .alert {
   border: 1.5px solid var(--ink);
   border-radius: 6px;
   padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.04);
+  background: #fff;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .ok {
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid #000;
   border-radius: 6px;
   padding: 10px 14px;
   font-size: 12px;
 }
 
 .ph {
-  border: 1px dashed rgba(0, 0, 0, 0.4);
+  border: 1px dashed #000;
   border-radius: 6px;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(0, 0, 0, 0.03),
-    rgba(0, 0, 0, 0.03) 8px,
-    transparent 8px,
-    transparent 16px
-  );
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font: 11px var(--mono);
-  color: rgba(0, 0, 0, 0.5);
+  color: #000;
 }
 
 /* ---------- small helpers for live wiring ---------- */
@@ -428,18 +423,18 @@ textarea.in {
 }
 
 .statusline.err {
-  color: #9b1c1c;
+  color: #000;
 }
 
 .statusline.ok {
-  color: #0b6b43;
+  color: #000;
 }
 
 .spin {
   display: inline-block;
   width: 11px;
   height: 11px;
-  border: 1.5px solid rgba(0, 0, 0, 0.3);
+  border: 1.5px solid #000;
   border-top-color: var(--ink);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -467,124 +462,5 @@ textarea.in {
   .grid3,
   .grid2 {
     grid-template-columns: 1fr 1fr;
-  }
-}
-
-.transcript p {
-  color: var(--muted);
-  margin: 0.4rem 0 0;
-}
-
-.transcript small {
-  display: block;
-  color: var(--blue-dark);
-  font-weight: 800;
-  margin-top: 0.25rem;
-}
-
-.timeline {
-  display: grid;
-  gap: 0.85rem;
-  list-style: none;
-  margin: 0;
-  max-height: 560px;
-  overflow: auto;
-  padding: 0;
-}
-
-.timeline li {
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 0.85rem;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: #fff;
-  padding: 0.85rem;
-}
-
-.timeline time {
-  color: var(--blue-dark);
-  font-size: 0.82rem;
-  font-weight: 850;
-}
-
-.timeline div {
-  display: grid;
-  gap: 0.2rem;
-}
-
-.timeline strong {
-  color: var(--muted);
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.timeline span {
-  font-weight: 800;
-}
-
-.timeline p {
-  color: var(--muted);
-  margin: 0;
-}
-
-.graph-card {
-  min-height: 640px;
-}
-
-.graph {
-  width: 100%;
-  height: min(62vh, 640px);
-  min-height: 480px;
-  border-radius: 22px;
-  background: linear-gradient(180deg, #fbfdff, #eef4ff);
-}
-
-.edge {
-  stroke: #9fb5d5;
-  stroke-width: 1.4;
-  opacity: 0.65;
-}
-
-.node {
-  stroke: white;
-  stroke-width: 3;
-  fill: #6c8fd9;
-  filter: drop-shadow(0 8px 12px rgba(45, 65, 100, 0.22));
-}
-
-.node.patient { fill: #102033; }
-.node.session { fill: #7891b3; }
-.node.complaint { fill: #2f6fed; }
-.node.diagnosis { fill: #8e5cf7; }
-.node.prescription,
-.node.medication { fill: #0b8f61; }
-.node.dosage { fill: #42a37d; }
-.node.plan { fill: #c47a00; }
-.node.allergy { fill: #d13939; }
-.node.labresult { fill: #11a1b8; }
-.node.hypothesis { fill: #ff8a00; }
-
-graph text,
-.graph text {
-  fill: white;
-  font-size: 11px;
-  font-weight: 850;
-  pointer-events: none;
-  text-anchor: middle;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-}
-
-@media (max-width: 980px) {
-  .hero,
-  .grid.two,
-  .grid.dashboard {
-    grid-template-columns: 1fr;
-  }
-
-  .shell {
-    width: min(100% - 1rem, 760px);
-    padding-top: 1rem;
   }
 }

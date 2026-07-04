@@ -21,7 +21,7 @@ export default function SeedPage() {
       <div className="grid2">
         <div className="box">
           <div className="sec">Demo command</div>
-          <div className="mono" style={{ background: "rgba(0,0,0,.05)", padding: "8px 10px", borderRadius: 5 }}>pnpm seed</div>
+          <div className="mono" style={{ background: "#fff", border: "1px solid #000", padding: "8px 10px", borderRadius: 5 }}>pnpm seed</div>
           <div className="sec">Script output</div>
           <div className="kv"><span>Sessions created</span><b>12</b></div>
           <div className="kv"><span>Entities remembered</span><b>30+</b></div>
