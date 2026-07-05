@@ -1,5 +1,6 @@
 services:
   web:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -25,6 +26,7 @@ services:
       start_period: 30s
 
   api:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -53,6 +55,7 @@ services:
       start_period: 30s
 
   cognee:
+    restart: unless-stopped
     build:
       context: ./services/cognee
     environment:
