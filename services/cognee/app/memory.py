@@ -35,12 +35,26 @@ from .models import (
     SafetyAlert,
 )
 
-# Let the service be launched either from the repo root or services/cognee.
-ROOT = Path(__file__).resolve().parents[3]
+# Let the service be launched either from the repo root, services/cognee, or a
+# Docker image where the service code is copied to /app/app.
+APP_FILE = Path(__file__).resolve()
+ROOT = next(
+    (
+        parent
+        for parent in APP_FILE.parents
+        if (parent / "services" / "cognee").exists() or (parent / "app").exists()
+    ),
+    Path.cwd(),
+)
 load_dotenv(ROOT / ".env")
 load_dotenv(Path.cwd() / ".env")
 
-DEFAULT_DATA_DIR = Path(os.getenv("ANAMNESIS_DATA_DIR", ROOT / "services" / "cognee" / ".data"))
+DEFAULT_DATA_DIR = Path(
+    os.getenv(
+        "ANAMNESIS_DATA_DIR",
+        ROOT / "services" / "cognee" / ".data" if (ROOT / "services" / "cognee").exists() else ROOT / ".data",
+    ),
+)
 COGNEE_CALL_TIMEOUT_SECONDS = float(os.getenv("COGNEE_CALL_TIMEOUT_SECONDS", "5"))
 
 
