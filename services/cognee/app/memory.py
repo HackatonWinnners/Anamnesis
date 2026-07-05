@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import asyncio
 import inspect
 import json
 import os
@@ -40,6 +41,7 @@ load_dotenv(ROOT / ".env")
 load_dotenv(Path.cwd() / ".env")
 
 DEFAULT_DATA_DIR = Path(os.getenv("ANAMNESIS_DATA_DIR", ROOT / "services" / "cognee" / ".data"))
+COGNEE_CALL_TIMEOUT_SECONDS = float(os.getenv("COGNEE_CALL_TIMEOUT_SECONDS", "5"))
 
 
 def dataset_for_patient(patient_id: str) -> str:
@@ -433,8 +435,11 @@ class CogneeAdapter:
             try:
                 value = fn(*positional, **kwargs)
                 if inspect.isawaitable(value):
-                    value = await value
+                    value = await asyncio.wait_for(value, timeout=COGNEE_CALL_TIMEOUT_SECONDS)
                 return CogneeCallResult(backend="cognee", raw=json_safe(value))
+            except TimeoutError as exc:
+                last_error = exc
+                break
             except TypeError as exc:
                 last_error = exc
                 continue
