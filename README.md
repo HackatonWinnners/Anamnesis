@@ -161,3 +161,24 @@ completed), not an HTTP error from the API. Common causes and fixes:
 - **The Cognee service is down.** The API now returns a clear `502` with
   "Cognee memory service is unreachable at …. Start it with `pnpm dev:cognee`."
   instead of an opaque 500.
+
+## Coolify deployment
+
+This branch includes a production `docker-compose.yml` for Coolify with three services:
+
+- `web` — Next.js UI, exposed at `https://anamnesis.042067.xyz` on port `3000`.
+- `api` — internal Hono API on port `8787`.
+- `cognee` — internal FastAPI memory/transcription service on port `8001` with persistent `cognee-data` volume.
+
+Coolify setup:
+
+1. Create a new **Docker Compose** resource from this repository/branch.
+2. Use `docker-compose.yml` at the repository root.
+3. Set the web service domain to `https://anamnesis.042067.xyz` if Coolify does not pick up `SERVICE_FQDN_WEB_3000` automatically.
+4. Add secrets/environment variables in Coolify, at minimum one LLM credential:
+   - `LLM_API_KEY` for the configured `LLM_BASE_URL`, or
+   - `OPENAI_API_KEY`, or
+   - `SAKANA_API_KEY`.
+5. Deploy.
+
+The web app uses same-origin `/api/*` requests in production. Next.js rewrites those requests server-side to the internal `api` service via `NEXT_SERVER_API_BASE_URL=http://api:8787`, so only the `web` service should be public.
