@@ -1,8 +1,7 @@
 FROM node:22-slim
 
 WORKDIR /app
-ENV NODE_ENV=production \
-    PNPM_HOME=/pnpm \
+ENV PNPM_HOME=/pnpm \
     PATH=/pnpm:$PATH
 
 RUN npm install -g pnpm@10.17.1
@@ -10,14 +9,15 @@ RUN npm install -g pnpm@10.17.1
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY apps/web/package.json ./apps/web/package.json
 COPY packages/shared/package.json ./packages/shared/package.json
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prod=false
 
 COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web
 
 ARG NEXT_PUBLIC_API_BASE_URL=
 ARG NEXT_SERVER_API_BASE_URL=http://api:8787
-ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL \
+ENV NODE_ENV=production \
+    NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL \
     NEXT_SERVER_API_BASE_URL=$NEXT_SERVER_API_BASE_URL
 
 RUN pnpm --filter @anamnesis/web build
