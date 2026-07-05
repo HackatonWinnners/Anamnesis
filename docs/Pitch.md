@@ -35,15 +35,16 @@ Create a YouTube video demo, not more than **3 minutes**, covering:
 
 **Narration:**
 
-> The app uses a Next.js frontend for the doctor dashboard, a Hono TypeScript API gateway, and a Python FastAPI service for the memory layer.  
+> The app uses a Next.js frontend for the doctor dashboard, a Hono TypeScript API gateway, and a Python FastAPI service for the memory layer. That FastAPI service is the Cognee adapter: it is the only layer that imports Cognee and maps each patient to an isolated dataset such as `patient_<id>`.  
 > Audio consultations are processed with local stable-ts transcription. The transcript is passed to a configured LLM for medical entity extraction.  
-> Extracted entities like symptoms, diagnoses, medications, allergies, lab results, and follow-up plans are stored as structured graph nodes.  
-> The backend exposes APIs for remember, recall, improve, medication safety checks, and forget operations.
+> Those extracted facts become the payload for Cognee `remember()`: symptoms, diagnoses, medications, allergies, lab results, and follow-up plans are written as typed graph memory nodes linked to the patient and session.  
+> During the demo, doctor questions and medication checks use Cognee `recall()` to retrieve relevant graph context, the medical intuition feature uses `improve()` or `memify()` to create hypothesis nodes from longitudinal patterns, and GDPR deletion uses `forget()` to remove the patient's dataset. A small local graph projection mirrors Cognee so the UI can render deterministic nodes and still show a fallback warning if the Cognee SDK is unavailable.
 
 **Screen recording:**
 
 - Show the Session Processing page.
-- Point to the pipeline: audio → transcription → LLM extraction → remember.
+- Point to the pipeline: audio → transcription → LLM extraction → Cognee `remember()`.
+- Mention that recall, safety, improve/memify, and forget are routed through the FastAPI Cognee service.
 - Optionally show terminal services running.
 
 ---
@@ -56,8 +57,8 @@ Create a YouTube video demo, not more than **3 minutes**, covering:
 > Then I can process a new consultation by recording or uploading audio. The system transcribes the consultation, extracts medical entities, and writes them into the patient graph.  
 > Next, the Patient Timeline lets the doctor run natural-language recall queries, for example asking for stomach complaints or sleep-related issues over a time period.  
 > The Pre-Session Brief summarizes relevant history before the doctor enters the room.  
-> In Medication Safety, the system checks a proposed medication against the patient’s graph memory, including documented allergies and rule-based risk patterns such as NSAID or aspirin use in patients with ulcer history.  
-> Finally, the Memory Graph visualizes patient, session, clinical, and hypothesis nodes. The medical intuition feature can connect facts over time into doctor-facing hypothesis nodes, such as linking fatigue and low ferritin into a possible longitudinal pattern.
+> In Medication Safety, the system uses Cognee `recall()` to pull relevant allergies, medications, and risk history, then checks a proposed medication against documented facts and rule-based patterns such as NSAID or aspirin use in patients with ulcer history.  
+> Finally, the Memory Graph visualizes patient, session, clinical, and hypothesis nodes mirrored from Cognee graph memory. The medical intuition feature calls Cognee `improve()` or `memify()` and can connect facts over time into doctor-facing hypothesis nodes, such as linking fatigue and low ferritin into a possible longitudinal pattern.
 
 **Screen recording sequence:**
 
@@ -107,7 +108,8 @@ Tech stack:
 - Python FastAPI memory service
 - stable-ts local transcription
 - Configurable LLM-based medical entity extraction
-- Graph memory APIs: remember, recall, improve/memify, forget
+- Cognee graph memory via FastAPI adapter
+- Cognee APIs: remember for storing typed patient/session facts, recall for timeline and safety context, improve/memify for longitudinal hypotheses, and forget for GDPR-style patient deletion
 
 Disclaimer: Not medical advice. This is an experimental tool for documentation purposes only.
 ```
