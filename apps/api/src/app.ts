@@ -26,22 +26,27 @@ config({ path: "../../.env", override: false });
 
 const COGNEE_SERVICE_URL = process.env.COGNEE_SERVICE_URL ?? "http://localhost:8001";
 
+function envValue(name: string): string | undefined {
+  const value = process.env[name]?.trim();
+  return value ? value : undefined;
+}
+
 // LLM provider is configurable so the extraction step can run against OpenAI
 // (GPT-4o) or any OpenAI-compatible endpoint such as Sakana Fugu.
 // Resolution order:
 //   - explicit LLM_BASE_URL / LLM_API_KEY / LLM_MODEL win
 //   - otherwise, if a Sakana key is present (and no OpenAI key), use Fugu
 //   - otherwise, default to OpenAI GPT-4o
-const HAS_OPENAI = Boolean(process.env.OPENAI_API_KEY);
-const HAS_SAKANA = Boolean(process.env.SAKANA_API_KEY);
+const HAS_OPENAI = Boolean(envValue("OPENAI_API_KEY"));
+const HAS_SAKANA = Boolean(envValue("SAKANA_API_KEY"));
 const USE_SAKANA = !HAS_OPENAI && HAS_SAKANA;
 
 const LLM_BASE_URL =
-  process.env.LLM_BASE_URL ?? (USE_SAKANA ? "https://api.sakana.ai/v1" : undefined);
+  envValue("LLM_BASE_URL") ?? (USE_SAKANA ? "https://api.sakana.ai/v1" : undefined);
 const LLM_API_KEY =
-  process.env.LLM_API_KEY ?? process.env.OPENAI_API_KEY ?? process.env.SAKANA_API_KEY;
+  envValue("LLM_API_KEY") ?? envValue("OPENAI_API_KEY") ?? envValue("SAKANA_API_KEY");
 const LLM_MODEL =
-  process.env.LLM_MODEL ?? (LLM_BASE_URL?.includes("sakana") ? "fugu" : "gpt-4o");
+  envValue("LLM_MODEL") ?? (LLM_BASE_URL?.includes("sakana") ? "fugu" : "gpt-4o");
 // Fugu (and Fugu Ultra especially) can take a while; give the client headroom.
 const LLM_TIMEOUT_MS = Number(process.env.LLM_TIMEOUT_MS ?? 180000);
 

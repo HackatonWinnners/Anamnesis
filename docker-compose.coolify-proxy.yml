@@ -1,0 +1,42 @@
+services:
+  web:
+    networks:
+      - default
+      - coolify
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: coolify
+      traefik.http.routers.http-anamnesis.entryPoints: http
+      traefik.http.routers.http-anamnesis.rule: Host(`anamnesis.042067.xyz`)
+      traefik.http.routers.http-anamnesis.middlewares: redirect-to-https
+      traefik.http.routers.https-anamnesis.entryPoints: https
+      traefik.http.routers.https-anamnesis.rule: Host(`anamnesis.042067.xyz`)
+      traefik.http.routers.https-anamnesis.middlewares: gzip
+      traefik.http.routers.https-anamnesis.tls: "true"
+      traefik.http.routers.https-anamnesis.tls.certresolver: letsencrypt
+      traefik.http.routers.https-anamnesis.service: anamnesis-web-svc
+      traefik.http.services.anamnesis-web-svc.loadbalancer.server.port: "3000"
+
+  api:
+    networks:
+      - default
+      - coolify
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: coolify
+      traefik.http.routers.http-anamnesis-api.entryPoints: http
+      traefik.http.routers.http-anamnesis-api.rule: Host(`anamnesis.042067.xyz`) && PathPrefix(`/api`)
+      traefik.http.routers.http-anamnesis-api.middlewares: redirect-to-https
+      traefik.http.routers.http-anamnesis-api.priority: "100"
+      traefik.http.routers.https-anamnesis-api.entryPoints: https
+      traefik.http.routers.https-anamnesis-api.rule: Host(`anamnesis.042067.xyz`) && PathPrefix(`/api`)
+      traefik.http.routers.https-anamnesis-api.middlewares: gzip
+      traefik.http.routers.https-anamnesis-api.tls: "true"
+      traefik.http.routers.https-anamnesis-api.tls.certresolver: letsencrypt
+      traefik.http.routers.https-anamnesis-api.service: anamnesis-api-svc
+      traefik.http.routers.https-anamnesis-api.priority: "100"
+      traefik.http.services.anamnesis-api-svc.loadbalancer.server.port: "8787"
+
+networks:
+  coolify:
+    external: true
