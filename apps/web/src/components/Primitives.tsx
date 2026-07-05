@@ -1,6 +1,6 @@
 import type { Graph, GraphNode, HistoryResponse } from "@anamnesis/shared";
-import type { ReactNode } from "react";
-import { fmtDate } from "../lib/demo";
+import type { CSSProperties, ReactNode } from "react";
+import { fmtDate } from "../lib/patientData";
 
 export function Disclaimer({ text }: { text: string }) {
   return <div className="disc">{text}</div>;
@@ -50,59 +50,102 @@ export function TimelineTable({ history }: { history: HistoryResponse | null }) 
   );
 }
 
-export function GraphSketch({ graph }: { graph: Graph | null }) {
+export function GraphSketch({
+  graph,
+  selectedNodeId,
+  onSelectNode,
+}: {
+  graph: Graph | null;
+  selectedNodeId?: string | null;
+  onSelectNode?: (node: GraphNode) => void;
+}) {
   const nodes = graph?.nodes ?? [];
   const patient = nodes.find((n) => n.type === "Patient") ?? nodes[0];
   const sessions = nodes.filter((n) => n.type === "Session").slice(-2);
   const clinical = nodes.filter((n) => !["Patient", "Session"].includes(n.type)).slice(0, 5);
   const hypothesis = nodes.find((n) => n.type === "Hypothesis");
 
+  if (nodes.length === 0) {
+    return (
+      <div className="box" style={{ minHeight: 300, justifyContent: "center", alignItems: "center" }}>
+        <span className="muted">No graph loaded yet. Press “Load graph” to run recall().</span>
+      </div>
+    );
+  }
+
   return (
     <div className="box" style={{ minHeight: 300, justifyContent: "center", gap: 14 }}>
       <div className="row" style={{ justifyContent: "center" }}>
-        <span className="node" style={{ borderWidth: 2.5 }}>
-          Patient: {patient?.label ?? "Anna Müller"}
-        </span>
+        <GraphNodePill node={patient} label={`Patient: ${patient?.label ?? "—"}`} selectedNodeId={selectedNodeId} onSelectNode={onSelectNode} style={{ borderWidth: 2.5 }} />
       </div>
+      {sessions.length ? (
+        <>
       <div className="row" style={{ justifyContent: "center" }}>
         <span className="edge">HAS_SESSION ↓</span>
       </div>
       <div className="row" style={{ justifyContent: "center" }}>
-        {(sessions.length ? sessions : [{ id: "s1", label: "Session #9" }, { id: "s2", label: "Session #11" }]).map((n) => (
-          <span className="node" key={n.id}>
-            {short(n.label)}
-          </span>
+        {sessions.map((n) => (
+          <GraphNodePill key={n.id} node={n} label={short(n.label)} selectedNodeId={selectedNodeId} onSelectNode={onSelectNode} />
         ))}
       </div>
+        </>
+      ) : null}
+      {clinical.length ? (
+        <>
       <div className="row" style={{ justifyContent: "center" }}>
         <span className="edge">MENTIONS ↓</span>
       </div>
       <div className="row" style={{ justifyContent: "center" }}>
-        {(clinical.length
-          ? clinical
-          : [
-              { id: "c1", label: "Complaint: Fatigue" },
-              { id: "c2", label: "Lab: Low ferritin 9 ng/mL" },
-              { id: "c3", label: "Diagnosis: Gastric ulcer" },
-            ]
-        ).map((n) => (
-          <span className="node" key={n.id}>
-            {short(n.label)}
-          </span>
+        {clinical.map((n) => (
+          <GraphNodePill key={n.id} node={n} label={short(`${n.type}: ${n.label}`)} selectedNodeId={selectedNodeId} onSelectNode={onSelectNode} />
         ))}
       </div>
+        </>
+      ) : null}
+      {hypothesis ? (
+        <>
       <div className="row" style={{ justifyContent: "center" }}>
         <span className="edge">SUPPORTS ↓</span>
-        <span className="edge" style={{ marginLeft: 120 }}>
-          HAS_DOSAGE ↓
-        </span>
       </div>
       <div className="row" style={{ justifyContent: "center" }}>
-        <span className="node hyp">{short(hypothesis?.label ?? "Hypothesis: Possible iron-deficiency pattern")}</span>
-        <span className="node">Plan: Avoid aspirin/NSAIDs</span>
-        <span className="node">Dosage: Pantoprazole 40 mg</span>
+        <GraphNodePill node={hypothesis} label={short(`Hypothesis: ${hypothesis.label}`)} selectedNodeId={selectedNodeId} onSelectNode={onSelectNode} className="hyp" />
       </div>
+        </>
+      ) : null}
     </div>
+  );
+}
+
+function GraphNodePill({
+  node,
+  label,
+  selectedNodeId,
+  onSelectNode,
+  className = "",
+  style,
+}: {
+  node?: GraphNode;
+  label: string;
+  selectedNodeId?: string | null;
+  onSelectNode?: (node: GraphNode) => void;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const selected = Boolean(node && selectedNodeId === node.id);
+  if (!node || !onSelectNode) {
+    return <span className={`node ${className}`.trim()} style={style}>{label}</span>;
+  }
+  return (
+    <button
+      type="button"
+      className={`node nodebtn ${className} ${selected ? "selected" : ""}`.trim()}
+      style={style}
+      onClick={() => onSelectNode(node)}
+      aria-pressed={selected}
+      title={`Select ${node.type}: ${node.label}`}
+    >
+      {label}
+    </button>
   );
 }
 
@@ -110,28 +153,16 @@ export function NodeDetail({ node }: { node?: GraphNode }) {
   return (
     <div className="box">
       <div className="sec">Node detail</div>
-      <div className="kv">
-        <span>Type</span>
-        <b>{node?.type ?? "Lab result"}</b>
-      </div>
-      <div className="kv">
-        <span>Label</span>
-        <b style={{ textAlign: "right" }}>{node?.label ?? "Low ferritin 9 ng/mL"}</b>
-      </div>
-      <div className="kv">
-        <span>Timestamp</span>
-        <b>{fmtDate(node?.timestamp) ?? "2026-02-11"}</b>
-      </div>
-      <div className="kv">
-        <span>Context</span>
-        <span style={{ textAlign: "right" }}>{node?.context ?? "tiredness work-up"}</span>
-      </div>
-      <div className="sec" style={{ marginTop: 6 }}>
-        Actions
-      </div>
-      <button className="btn">Inspect supporting evidence</button>
-      <button className="btn">Open related timeline entries</button>
-      <button className="btn">Run recall from this node</button>
+      {node ? (
+        <>
+          <div className="kv"><span>Type</span><b>{node.type}</b></div>
+          <div className="kv"><span>Label</span><b style={{ textAlign: "right" }}>{node.label}</b></div>
+          <div className="kv"><span>Timestamp</span><b>{fmtDate(node.timestamp)}</b></div>
+          <div className="kv"><span>Context</span><span style={{ textAlign: "right" }}>{node.context ?? "—"}</span></div>
+        </>
+      ) : (
+        <span className="muted">No node selected. Load the graph to inspect a node.</span>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Anamnesis | Graph Memory Medical Assistant",
-  description: "Hackathon MVP doctor dashboard for continuity of care with Cognee graph memory.",
+  description: "Doctor dashboard for continuity of care with Cognee graph memory.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

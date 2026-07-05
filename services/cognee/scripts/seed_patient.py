@@ -30,7 +30,7 @@ def entity(entity_type: MedicalEntityType, value: str, days_ago: int, context: s
 
 
 def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
-    """A 2-year, coherent history with built-in demo hooks.
+    """A 2-year, coherent history with built-in workflow hooks.
 
     Hooks:
     - sleep complaints across the last year for recall()
@@ -41,7 +41,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
     return [
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-01",
+            sessionId="visit-01",
             transcript="Annual check-up. Patient reports seasonal allergies and occasional headaches.",
             summary="Annual check-up with allergy history documented.",
             entities=[
@@ -52,7 +52,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-02",
+            sessionId="visit-02",
             transcript="Epigastric pain after NSAID use; diagnosed likely gastric ulcer and started pantoprazole.",
             summary="Gastric ulcer history after NSAID exposure.",
             entities=[
@@ -64,7 +64,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-03",
+            sessionId="visit-03",
             transcript="Ulcer symptoms improved. Blood pressure slightly elevated.",
             summary="Ulcer follow-up improved; blood pressure monitoring started.",
             entities=[
@@ -75,7 +75,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-04",
+            sessionId="visit-04",
             transcript="Patient describes increasing fatigue over several weeks, no fever, no weight loss.",
             summary="First fatigue presentation.",
             entities=[
@@ -85,7 +85,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-05",
+            sessionId="visit-05",
             transcript="Lab review shows low ferritin. Discussed iron-rich diet and oral iron trial.",
             summary="Low ferritin documented after fatigue complaint.",
             entities=[
@@ -96,7 +96,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-06",
+            sessionId="visit-06",
             transcript="Patient reports difficulty falling asleep during stressful work period.",
             summary="Initial sleep complaint during stress.",
             entities=[
@@ -106,7 +106,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-07",
+            sessionId="visit-07",
             transcript="Follow-up after iron therapy. Energy improved, ferritin rising.",
             summary="Fatigue improved with iron supplementation.",
             entities=[
@@ -117,7 +117,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-08",
+            sessionId="visit-08",
             transcript="Second sleep visit. Waking at 3 AM several times per week.",
             summary="Sleep maintenance insomnia documented.",
             entities=[
@@ -128,7 +128,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-09",
+            sessionId="visit-09",
             transcript="Migraine-like headaches increased. Avoided aspirin because of ulcer history.",
             summary="Headache treatment constrained by ulcer history.",
             entities=[
@@ -138,7 +138,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-10",
+            sessionId="visit-10",
             transcript="Sleep improved but still fragmented before exams.",
             summary="Recurrent sleep fragmentation.",
             entities=[
@@ -148,7 +148,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-11",
+            sessionId="visit-11",
             transcript="New allergic rhinitis flare. Started cetirizine.",
             summary="Allergic rhinitis flare treated.",
             entities=[
@@ -158,7 +158,7 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
         ),
         RememberRequest(
             patient=patient,
-            sessionId="demo-visit-12",
+            sessionId="visit-12",
             transcript="Most recent visit. Patient again asks about sleep, averaging 5 hours per night.",
             summary="Recent short sleep duration.",
             entities=[
@@ -170,10 +170,10 @@ def synthetic_sessions(patient: Patient) -> list[RememberRequest]:
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(description="Seed a synthetic 2-year Cognee graph for the Anamnesis demo patient.")
-    parser.add_argument("--patient-id", default="demo-patient-001")
+    parser = argparse.ArgumentParser(description="Seed a synthetic 2-year Cognee graph for the Anamnesis patient.")
+    parser.add_argument("--patient-id", default="patient-001")
     parser.add_argument("--patient-name", default="Anna Müller")
-    parser.add_argument("--forget-first", action="store_true", help="Delete any existing demo graph before seeding.")
+    parser.add_argument("--forget-first", action="store_true", help="Delete any existing patient graph before seeding.")
     parser.add_argument("--improve", action="store_true", help="Run improve/memify after seeding.")
     args = parser.parse_args()
 
@@ -199,7 +199,7 @@ async def main() -> None:
     print(f"patientId={patient.id}")
     print(f"sessions={len(sessions)}")
     print(f"sleep_related_last_year={len(history.timeline)}")
-    print("demo conflict medication: Aspirin 500 mg")
+    print("conflict-check medication: Aspirin 500 mg")
 
 
 if __name__ == "__main__":

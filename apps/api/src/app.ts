@@ -7,7 +7,7 @@ import OpenAI from "openai";
 import { z } from "zod";
 import {
   ConflictCheckRequestSchema,
-  DEFAULT_DEMO_PATIENT,
+  DEFAULT_PATIENT,
   ForgetResponseSchema,
   GraphSchema,
   HistoryResponseSchema,
@@ -334,8 +334,8 @@ app.get("/api/health", async (c) => {
 
 app.post("/api/sessions/process", async (c) => {
   const form = await c.req.formData();
-  const patientId = String(form.get("patientId") ?? DEFAULT_DEMO_PATIENT.id);
-  const patientName = String(form.get("patientName") ?? DEFAULT_DEMO_PATIENT.name);
+  const patientId = String(form.get("patientId") ?? DEFAULT_PATIENT.id);
+  const patientName = String(form.get("patientName") ?? DEFAULT_PATIENT.name);
   const consentGiven = String(form.get("consentGiven") ?? "true") === "true";
   const sessionId = String(form.get("sessionId") ?? `session-${Date.now()}`);
   const timestamp = String(form.get("timestamp") ?? new Date().toISOString());

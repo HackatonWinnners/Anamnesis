@@ -79,6 +79,63 @@ def json_safe(value: Any) -> Any:
         return repr(value)
 
 
+def text_matches_any(text: str, terms: list[str]) -> bool:
+    return any(term in text for term in terms)
+
+
+def recall_topic_terms(query: str) -> list[str]:
+    q = query.lower()
+    topic_groups = [
+        (
+            ["sleep", "insomnia", "schlaf"],
+            ["sleep", "insomnia", "schlaf"],
+        ),
+        (
+            ["fatigue", "tired", "tiredness", "müd", "muede", "müde"],
+            ["fatigue", "tired", "tiredness", "müd", "muede", "müde"],
+        ),
+        (
+            ["stomach", "belly", "abdominal", "abdomen", "epigastric", "gastric", "ulcer", "magen", "bauch"],
+            ["stomach", "belly", "abdominal", "abdomen", "epigastric", "gastric", "ulcer", "magen", "bauch"],
+        ),
+        (
+            ["headache", "head ache", "migraine", "head pain", "kopfschmerz", "kopf"],
+            ["headache", "headaches", "head ache", "migraine", "head pain", "forehead", "kopfschmerz", "kopf"],
+        ),
+        (
+            ["allergy", "allergic", "rhinitis", "pollen", "allergie", "heuschnupfen"],
+            ["allergy", "allergic", "rhinitis", "pollen", "allergie", "heuschnupfen"],
+        ),
+        (
+            ["iron", "ferritin", "anemia", "anaemia", "eisen"],
+            ["iron", "ferritin", "anemia", "anaemia", "eisen"],
+        ),
+    ]
+    terms: list[str] = []
+    for triggers, matches in topic_groups:
+        if text_matches_any(q, triggers):
+            terms.extend(matches)
+    return terms
+
+
+def recall_type_filter(query: str) -> set[MedicalEntityType] | None:
+    q = query.lower()
+    selected: set[MedicalEntityType] = set()
+    if text_matches_any(q, ["complaint", "complaints", "symptom", "symptoms", "beschwerde", "symptom"]):
+        selected.update({MedicalEntityType.COMPLAINT, MedicalEntityType.SYMPTOM})
+    if text_matches_any(q, ["diagnosis", "diagnoses", "diagnose"]):
+        selected.add(MedicalEntityType.DIAGNOSIS)
+    if text_matches_any(q, ["medication", "medications", "medicine", "drug", "prescription", "dose", "dosage"]):
+        selected.update({MedicalEntityType.MEDICATION, MedicalEntityType.PRESCRIPTION, MedicalEntityType.DOSAGE})
+    if text_matches_any(q, ["allergy", "allergies", "allergic"]):
+        selected.add(MedicalEntityType.ALLERGY)
+    if text_matches_any(q, ["lab", "labs", "result", "results", "ferritin"]):
+        selected.add(MedicalEntityType.LAB_RESULT)
+    if text_matches_any(q, ["plan", "follow-up", "follow up"]):
+        selected.add(MedicalEntityType.PLAN)
+    return selected or None
+
+
 def entity_to_node_type(entity_type: MedicalEntityType) -> GraphNodeType:
     return {
         MedicalEntityType.SYMPTOM: GraphNodeType.Complaint,
@@ -233,12 +290,17 @@ class ProjectionStore:
 
         entities = list(record.entities)
         q = query.lower()
-        if any(term in q for term in ["sleep", "insomnia", "schlaf", "müd", "fatigue"]):
+        topic_terms = recall_topic_terms(query)
+        if topic_terms:
             entities = [
                 entity
                 for entity in entities
-                if any(term in f"{entity.value} {entity.context or ''}".lower() for term in ["sleep", "insomnia", "schlaf", "fatigue", "müd"])
+                if text_matches_any(f"{entity.value} {entity.context or ''}".lower(), topic_terms)
             ]
+
+        type_filter = recall_type_filter(query)
+        if type_filter:
+            entities = [entity for entity in entities if entity.type in type_filter]
 
         if "last year" in q or "12 months" in q or "letztes jahr" in q:
             cutoff = datetime.now(timezone.utc) - timedelta(days=365)

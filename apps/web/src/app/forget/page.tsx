@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { forgetPatient, type ForgetResponse } from "../../lib/api";
-import { DEFAULT_DEMO_PATIENT, DEMO_DATASET } from "../../lib/demo";
+import { datasetForPatient, useActivePatient } from "../../lib/activePatient";
 import { StatusLine } from "../../components/Primitives";
 
 export default function ForgetPage() {
+  const { activePatient } = useActivePatient();
   const [confirmed, setConfirmed] = useState(false);
   const [result, setResult] = useState<ForgetResponse | null>(null);
   const [message, setMessage] = useState("Deletion is disabled until confirmation is checked.");
@@ -19,9 +20,9 @@ export default function ForgetPage() {
     setBusy(true);
     setMessage("Calling forget()...");
     try {
-      const data = await forgetPatient(DEFAULT_DEMO_PATIENT.id);
+      const data = await forgetPatient(activePatient.id);
       setResult(data);
-      setMessage(`forget() removed dataset ${data.dataset}. Re-run pnpm seed to restore the demo.`);
+      setMessage(`forget() removed dataset ${datasetForPatient(activePatient.id)}.`);
     } catch (err) {
       setMessage(err instanceof Error ? err.message : String(err));
     } finally {
@@ -35,18 +36,18 @@ export default function ForgetPage() {
       <p className="sub">Delete a patient’s entire graph memory dataset.</p>
       <div className="alert">
         <div style={{ fontWeight: 700 }}>⚠ Warning</div>
-        <div>Deleting patient data removes all sessions, timeline entities, graph nodes, graph edges, hypotheses, and local projection data. This action demonstrates GDPR deletion.</div>
+        <div>Deleting patient data removes all sessions, timeline entities, graph nodes, graph edges, hypotheses, and local projection data.</div>
       </div>
       <div className="box">
         <div className="sec">Confirmation</div>
         <div className="grid2">
-          <label className="field">Patient ID<div className="in mono">{DEFAULT_DEMO_PATIENT.id}</div></label>
-          <label className="field">Dataset name<div className="in mono">{DEMO_DATASET}</div></label>
+          <label className="field">Patient ID<div className="in mono">{activePatient.id}</div></label>
+          <label className="field">Dataset name<div className="in mono">{datasetForPatient(activePatient.id)}</div></label>
         </div>
         <label style={{ fontSize: 12 }}>
           <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} /> I confirm permanent deletion of this patient’s memory dataset.
         </label>
-        <div className="mono muted" style={{ fontSize: 11 }}>forget(dataset="{DEMO_DATASET}")</div>
+        <div className="mono muted" style={{ fontSize: 11 }}>forget(dataset="{datasetForPatient(activePatient.id)}")</div>
         <button className="btn danger" style={{ alignSelf: "flex-start" }} onClick={() => void run()} disabled={!confirmed || busy}>
           {busy ? <span className="spin" /> : null} Delete patient graph
         </button>

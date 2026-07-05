@@ -12,7 +12,6 @@ const navItems = [
   ["5", "Pre-Session Brief", "/brief"],
   ["6", "Medication Safety", "/safety"],
   ["7", "Memory Graph", "/graph"],
-  ["8", "Medical Intuition", "/improve"],
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -22,7 +21,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <nav className="nav" aria-label="Anamnesis pages">
         <div className="brand">
           Anamnesis
-          <small>Medical memory system · Cognee hackathon MVP</small>
+          <small>Medical memory system · Cognee graph memory</small>
         </div>
         <ol>
           {navItems.map(([num, label, href]) => {

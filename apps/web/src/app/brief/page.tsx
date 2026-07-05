@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getHistory, type HistoryResponse } from "../../lib/api";
 import type { MedicalEntity } from "@anamnesis/shared";
-import { BRIEF_QUERY, DEFAULT_DEMO_PATIENT, MEDICAL_DISCLAIMER } from "../../lib/demo";
+import { BRIEF_QUERY, MEDICAL_DISCLAIMER } from "../../lib/patientData";
+import { useActivePatient } from "../../lib/activePatient";
 import { Disclaimer, StatusLine } from "../../components/Primitives";
 
 export default function BriefPage() {
+  const { activePatient } = useActivePatient();
   const [query, setQuery] = useState(BRIEF_QUERY);
   const [history, setHistory] = useState<HistoryResponse | null>(null);
   const [message, setMessage] = useState("Ready to run recall().");
@@ -16,7 +18,7 @@ export default function BriefPage() {
     setBusy(true);
     setMessage("Running recall()...");
     try {
-      const data = await getHistory(DEFAULT_DEMO_PATIENT.id, query);
+      const data = await getHistory(activePatient.id, query);
       setHistory(data);
       setMessage(`Recall returned ${data.timeline.length} timeline item(s).`);
     } catch (err) {
@@ -25,11 +27,6 @@ export default function BriefPage() {
       setBusy(false);
     }
   }
-
-  useEffect(() => {
-    void recall();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const timeline = history?.timeline ?? [];
   const byType = (...types: MedicalEntity["type"][]) =>
@@ -53,9 +50,10 @@ export default function BriefPage() {
     <div className="pg">
       <h1 className="h1">1-Minute Pre-Session Brief</h1>
       <p className="sub">Understand the patient before entering the room.</p>
+      <div className="mono muted" style={{ fontSize: 11 }}>patient: {activePatient.name} · {activePatient.id}</div>
       <div className="box" style={{ flexDirection: "row", alignItems: "flex-end", gap: 10 }}>
         <label className="field" style={{ flex: 1 }}>Recall query<input className="in" value={query} onChange={(e) => setQuery(e.target.value)} /></label>
-        <button className="btn pri" onClick={() => void recall()} disabled={busy}>{busy ? <span className="spin" /> : null} Run recall()</button>
+        <button className="btn pri" onClick={() => void recall()} disabled={busy}>{busy ? <span className="spin" /> : null} Recall</button>
       </div>
       <StatusLine>{message}</StatusLine>
       <div className="grid2">
@@ -66,7 +64,7 @@ export default function BriefPage() {
         <div className="box"><div className="sec">Allergies & adverse reactions</div><div>{join(byType("ALLERGY"), 3, "No allergies recorded.")}</div></div>
         <div className="box"><div className="sec">Open follow-up plans</div><div>{join(byType("PLAN"), 4, "No open plans recorded.")}</div></div>
         <div className="box"><div className="sec">Notable lab results</div><div>{join(byType("LAB_RESULT"), 4, "No lab results recorded.")}</div></div>
-        <div className="box"><div className="sec">Hypotheses from improve()</div><div>{hypotheses.length ? hypotheses.map((h) => h.label).join(" · ") : "Run improve() to generate hypotheses."}</div></div>
+        <div className="box"><div className="sec">Hypotheses from improve()</div><div>{hypotheses.length ? hypotheses.map((h) => h.label).join(" · ") : "Run medical intuition on the Memory Graph page to generate hypotheses."}</div></div>
       </div>
       <div className="box">
         <div className="sec">Recall output</div>
@@ -74,7 +72,7 @@ export default function BriefPage() {
         <div><b>Matched entities:</b> {timeline.length}</div>
         <div><b>Graph nodes:</b> {history?.graph.nodes.length ?? 0}</div>
         <div><b>Important risks:</b> {join(byType("ALLERGY"), 2, "none flagged")}{byType("DIAGNOSIS").some((d) => /ulcer/i.test(d.value)) ? " · NSAID/aspirin bleeding risk (ulcer history)" : ""}</div>
-        {!loaded ? <div className="muted">No recall data yet — click “Run recall()”.</div> : null}
+        {!loaded ? <div className="muted">No recall data yet — click “Recall”.</div> : null}
       </div>
       <Disclaimer text={MEDICAL_DISCLAIMER} />
     </div>

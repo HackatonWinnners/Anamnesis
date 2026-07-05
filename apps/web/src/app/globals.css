@@ -128,6 +128,7 @@ select {
 .pg {
   width: 100%;
   max-width: 820px;
+  min-height: 100vh;
   padding: 26px 28px 30px;
   display: flex;
   flex-direction: column;
@@ -241,7 +242,9 @@ details.box[open] summary {
   padding: 2px 9px;
   font-size: 11px;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .kv {
@@ -271,6 +274,8 @@ details.box[open] summary {
   font-size: 11px;
   color: #000;
   background: #fff;
+  order: 999;
+  margin-top: auto;
 }
 
 .tbl {
@@ -385,10 +390,22 @@ textarea.in {
   background: #fff;
   white-space: nowrap;
   display: inline-block;
+  color: var(--ink);
 }
 
 .node.hyp {
   border-style: dashed;
+}
+
+.nodebtn {
+  cursor: pointer;
+  font: inherit;
+}
+
+.nodebtn:hover,
+.nodebtn.selected {
+  background: var(--ink);
+  color: #fff;
 }
 
 .edge {

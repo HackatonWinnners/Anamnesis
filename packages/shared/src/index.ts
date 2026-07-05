@@ -163,11 +163,11 @@ export type ConflictCheckRequest = z.infer<typeof ConflictCheckRequestSchema>;
 export type ImproveResponse = z.infer<typeof ImproveResponseSchema>;
 export type ForgetResponse = z.infer<typeof ForgetResponseSchema>;
 
-export const DEFAULT_DEMO_PATIENT: Patient = {
-  id: "demo-patient-001",
+export const DEFAULT_PATIENT: Patient = {
+  id: "patient-001",
   name: "Anna Müller",
   consentGiven: true,
 };
 
 export const MEDICAL_DISCLAIMER =
-  "Not medical advice. This is an experimental tool for documentation and hackathon purposes only.";
+  "Not medical advice. This is an experimental tool for documentation purposes only.";
